@@ -4,6 +4,7 @@ export async function connect() {
   try {
     mongoose.connect(process.env.MONGO_URI!);
     const connection = mongoose.connection;
+    console.log("Mongo URI:", process.env.MONGO_URI);
 
     connection.on("connected", () => {
       console.log("Mongo DB connection established!");
@@ -11,7 +12,7 @@ export async function connect() {
 
     connection.on("error", (err) => {
       console.log("Mongo DB connection failed!");
-      console.log(err);
+      // console.log(err);
       process.exit;
     });
   } catch (err) {

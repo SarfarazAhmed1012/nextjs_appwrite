@@ -1,16 +1,42 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
+  const router = useRouter();
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
-  const onLogin = async () => {};
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (user.email.length > 0 && user.password.length > 0) {
+      setButtonDisabled(false);
+    } else {
+      setButtonDisabled(true);
+    }
+  }, [user]);
+
+  const onLogin = async () => {
+    console.log("i ran");
+    try {
+      setLoading(true);
+      const response = await axios.post("/api/users/login", user);
+      console.log(response.data);
+      toast.success("Login success");
+      router.push("/profile");
+    } catch (err: any) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className=" flex flex-col items-center justify-center min-h-screen py-2">
       <h1>Signup</h1>
@@ -21,7 +47,7 @@ const LoginPage = () => {
         name="email"
         id="email"
         placeholder="email"
-        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600"
+        className="text-black p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600"
         value={user.email}
         onChange={(e) => setUser({ ...user, email: e.target.value })}
       />
@@ -31,7 +57,7 @@ const LoginPage = () => {
         name="password"
         id="password"
         placeholder="password"
-        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600"
+        className="text-black p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600"
         value={user.password}
         onChange={(e) => setUser({ ...user, password: e.target.value })}
       />
